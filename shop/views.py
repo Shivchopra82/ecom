@@ -38,7 +38,7 @@ def tracker(request):
     return render(request, 'shop/Tracker.html')
 
 def checkout(request):
-    return HttpResponse("This is checkout page of our webapp")
+    return render(request, 'shop/checkout.html')
 
 def contact(request):
     if request.method == "POST":
