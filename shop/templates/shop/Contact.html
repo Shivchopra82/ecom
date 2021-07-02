@@ -24,3 +24,11 @@
   </div>
     <button type="submit" class="btn btn-dark">Submit</button>
      {% endblock %}
+   {% block js %}
+      <script>
+     {% if var %}
+       alert("Thanks for contacting us. Your query is recorded")
+       document.location="/shop/contact/";
+    {%endif%}
+    </script> 
+    {% endblock %}
