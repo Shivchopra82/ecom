@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from .models import product, Contact, Order
+from .models import product, Contact, Order, OrderUpdate
 from math import ceil
 
 def index(request):
@@ -35,7 +35,24 @@ def about(request):
     return render(request, 'shop/about.html')
 
 def tracker(request):
-    return render(request, 'shop/Tracker.html')
+    if request.method == "POST":
+        orderId = request.POST.get('orderId', '')
+        email = request.POST.get('email', '')
+        try:
+            order = Order.objects.filter(order_id=orderId, email=email)
+            if len(order) > 0:
+                update = OrderUpdate.objects.filter(order_id=orderId)
+                updates = []
+                for item in update:
+                    updates.append({'text': item.update_desc, 'time': item.timestamp})
+                    response = json.dumps(updates, default=str)
+                return HttpResponse(response)
+            else:
+                return HttpResponse('{error}')
+        except Exception as e:
+            return HttpResponse("no response")
+
+    return render(request, 'shop/tracker.html')
 
 def checkout(request):
     if request.method == "POST":
@@ -50,6 +67,8 @@ def checkout(request):
 
         order = Order(items_json=itemsJson, name=name, email=email, address=address, city=city, state=state, zip_code=zip, phone=phone)
         order.save()
+        update = OrderUpdate(order_id=order.order_id, update_desc= "Your order has been placed")
+        update.save()
         id = order.order_id
         return render(request, 'shop/checkout.html', {'thank':'thanls', 'id':id})
     return render(request, 'shop/checkout.html')
