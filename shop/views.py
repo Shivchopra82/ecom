@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from .models import product, Contact, Order, OrderUpdate
 from math import ceil
+import json
 
 def index(request):
     products = product.objects.all()
@@ -48,9 +49,9 @@ def tracker(request):
                     response = json.dumps(updates, default=str)
                 return HttpResponse(response)
             else:
-                return HttpResponse('{error}')
+                return HttpResponse({})
         except Exception as e:
-            return HttpResponse("no response")
+            return HttpResponse({})
 
     return render(request, 'shop/tracker.html')
 
