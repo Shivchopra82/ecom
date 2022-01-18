@@ -1,1 +1,0 @@
-This file is created just to do practice of creating a large django project with different apps
